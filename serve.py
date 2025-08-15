@@ -42,7 +42,7 @@ echo -e "${GREEN}    Python Xray Argo 一键部署脚本   ${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo
 echo -e "${BLUE}基于项目: ${YELLOW}https://github.com/eooce/python-xray-argo${NC}"
-echo -e "${BLUE}脚本仓库: ${YELLOW}https://github.com/byJoey/free-vps-py${NC}"
+echo -e "${BLUE}脚本仓库: ${YELLOW}https://github.com/lhb-136/Quickly-set-VPS${NC}"
 echo -e "${BLUE}TG交流群: ${YELLOW}https://t.me/+ft-zI76oovgwNmRh${NC}"
 echo -e "${RED}脚本作者YouTube: ${YELLOW}https://www.youtube.com/@joeyblog${RED}"
 echo
