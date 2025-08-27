@@ -235,7 +235,7 @@ if [ "$MODE_CHOICE" = "1" ]; then
     
     configure_hf_keep_alive
     
-    echo -e "${YELLOW}注意: YouTube分流已禁用${NC}"
+    echo -e "${GREEN}YouTube分流已自动配置${NC}"
     echo
     echo -e "${GREEN}极速配置完成！正在启动服务...${NC}"
     echo
@@ -363,7 +363,7 @@ else
         fi
     fi
     
-    echo -e "${YELLOW}注意: YouTube分流已禁用${NC}"
+    echo -e "${GREEN}YouTube分流已自动配置${NC}"
 
     echo
     echo -e "${GREEN}完整配置完成！${NC}"
@@ -386,8 +386,8 @@ echo -e "${BLUE}正在启动服务...${NC}"
 echo -e "${YELLOW}当前工作目录：$(pwd)${NC}"
 echo
 
-# 修改Python文件添加80端口节点（不添加YouTube分流）
-echo -e "${BLUE}正在添加80端口节点（YouTube分流已禁用）...${NC}"
+# 修改Python文件添加YouTube分流到xray配置，并增加80端口节点
+echo -e "${BLUE}正在添加YouTube分流功能和80端口节点...${NC}"
 cat > youtube_patch.py << 'EOF'
 # coding: utf-8
 import os, base64, json, subprocess, time
@@ -396,7 +396,7 @@ import os, base64, json, subprocess, time
 with open('app.py', 'r', encoding='utf-8') as f:
     content = f.read()
 
-# 找到原始配置并替换为不包含YouTube分流的配置
+# 找到原始配置并替换为包含YouTube分流的配置
 old_config = 'config ={"log":{"access":"/dev/null","error":"/dev/null","loglevel":"none",},"inbounds":[{"port":ARGO_PORT ,"protocol":"vless","settings":{"clients":[{"id":UUID ,"flow":"xtls-rprx-vision",},],"decryption":"none","fallbacks":[{"dest":3001 },{"path":"/vless-argo","dest":3002 },{"path":"/vmess-argo","dest":3003 },{"path":"/trojan-argo","dest":3004 },],},"streamSettings":{"network":"tcp",},},{"port":3001 ,"listen":"127.0.0.1","protocol":"vless","settings":{"clients":[{"id":UUID },],"decryption":"none"},"streamSettings":{"network":"ws","security":"none"}},{"port":3002 ,"listen":"127.0.0.1","protocol":"vless","settings":{"clients":[{"id":UUID ,"level":0 }],"decryption":"none"},"streamSettings":{"network":"ws","security":"none","wsSettings":{"path":"/vless-argo"}},"sniffing":{"enabled":True ,"destOverride":["http","tls","quic"],"metadataOnly":False }},{"port":3003 ,"listen":"127.0.0.1","protocol":"vmess","settings":{"clients":[{"id":UUID ,"alterId":0 }]},"streamSettings":{"network":"ws","wsSettings":{"path":"/vmess-argo"}},"sniffing":{"enabled":True ,"destOverride":["http","tls","quic"],"metadataOnly":False }},{"port":3004 ,"listen":"127.0.0.1","protocol":"trojan","settings":{"clients":[{"password":UUID },]},"streamSettings":{"network":"ws","security":"none","wsSettings":{"path":"/trojan-argo"}},"sniffing":{"enabled":True ,"destOverride":["http","tls","quic"],"metadataOnly":False }},],"outbounds":[{"protocol":"freedom","tag": "direct" },{"protocol":"blackhole","tag":"block"}]}'
 
 new_config = '''config = {
@@ -582,13 +582,13 @@ content = content.replace(old_generate_function, new_generate_function)
 with open('app.py', 'w', encoding='utf-8') as f:
     f.write(content)
 
-print("80端口节点已成功添加（YouTube分流已禁用）")
+print("YouTube分流配置和80端口节点已成功添加")
 EOF
 
 python3 youtube_patch.py
 rm youtube_patch.py
 
-echo -e "${GREEN}80端口节点已集成（YouTube分流已禁用）${NC}"
+echo -e "${GREEN}YouTube分流和80端口节点已集成${NC}"
 
 # 先清理可能存在的进程
 pkill -f "python3 app.py" > /dev/null 2>&1
@@ -802,7 +802,9 @@ fi
 SAVE_INFO="${SAVE_INFO}
 
 === 分流说明 ===
-- YouTube分流已禁用，所有流量走直连路径"
+- 已集成YouTube分流优化到xray配置
+- YouTube相关域名自动走专用线路
+- 无需额外配置，透明分流"
 
 echo "$SAVE_INFO" > "$NODE_INFO_FILE"
 echo -e "${GREEN}节点信息已保存到 $NODE_INFO_FILE${NC}"
@@ -811,7 +813,7 @@ echo -e "${YELLOW}使用脚本选择选项3或运行带-v参数可随时查看�
 echo -e "${YELLOW}=== 重要提示 ===${NC}"
 echo -e "${GREEN}部署已完成，节点信息已成功生成${NC}"
 echo -e "${GREEN}可以立即使用订阅地址添加到客户端${NC}"
-echo -e "${YELLOW}YouTube分流已禁用，如需重新启用，请告知${NC}"
+echo -e "${GREEN}YouTube分流已集成到xray配置，无需额外设置${NC}"
 echo -e "${GREEN}服务将持续在后台运行${NC}"
 echo
 
